@@ -1,0 +1,37 @@
+# Publish the four packages to npm when a version tag is pushed (node scripts/release.mjs
+# <version> makes the tag). No npm token is stored: npm's trusted publishing accepts this
+# workflow's GitHub identity, configured on each package's npm settings, and every
+# release carries a provenance record linking it to the commit that built it.
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+  id-token: write   # the GitHub identity npm trusts
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+      - name: Trusted publishing needs npm 11.5 or later
+        run: npm install -g npm@^11.5.1
+      - run: npm ci
+      - run: npm test
+      - name: The tag names the version every package carries
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          for f in package.json packages/*/package.json; do
+            v=$(node -p "require('./$f').version")
+            [ "$v" = "$tag" ] || { echo "$f is $v, the tag is $tag"; exit 1; }
+          done
+      - name: Publish in dependency order (model, react, query, the aggregator)
+        run: npm publish --workspaces --access public --provenance
