@@ -1,7 +1,9 @@
 # Publish the four packages to npm when a version tag is pushed (node scripts/release.mjs
 # <version> makes the tag). No npm token is stored: npm's trusted publishing accepts this
 # workflow's GitHub identity, configured on each package's npm settings, and every
-# release carries a provenance record linking it to the commit that built it.
+# release carries a provenance record linking it to the commit that built it (which
+# requires this repository to be public). Releases are staged on npm for a maintainer's
+# approval before they go live.
 name: Release
 
 on:
@@ -16,8 +18,9 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    # The npm trusted publisher names this environment; GitHub holds the job here until the
-    # environment's required reviewer approves, and only for tags matching v*.
+    # The npm trusted publisher names this environment, which runs for v* tags only. The
+    # trusted publisher does not allow direct publishing, so a release is staged on npm and
+    # goes live only when a maintainer approves it there with two-factor authentication.
     environment: npm
     steps:
       - uses: actions/checkout@v4
