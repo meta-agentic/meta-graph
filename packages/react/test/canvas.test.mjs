@@ -3,18 +3,18 @@
 // keyboard (AC5), and a click on a node reaches the host.
 import { test, after } from 'node:test'
 import assert from 'node:assert/strict'
-import { loadWidgets } from '../test-support/mount.mjs'
-import { forceLayout } from './layout/force.js'
-import { resolveStyle } from './style.js'
-import { graphifyStyle, TYPE_COLOR } from '../widgets/graph/graphifyStyle.js'
+import { loadComponents } from '../test-support/mount.mjs'
+import { forceLayout } from '../src/layout/force.js'
+import { resolveStyle } from '../src/style.js'
+import { sampleStyle, KIND_COLOR } from '../test-support/sampleStyle.js'
 import { fixture } from './force.test.mjs'
 
 const flush = () => new Promise((r) => setTimeout(r, 20))
-const mod = await loadWidgets(['graph/GraphCanvas.jsx', 'graph/GraphList.jsx'])
+const mod = await loadComponents(['src/GraphCanvas.jsx', 'src/GraphList.jsx'])
 after(() => mod.close())
 
 const { model } = fixture(24, 30)
-const style = resolveStyle(graphifyStyle)
+const style = resolveStyle(sampleStyle)
 const geometry = forceLayout(model, { size: style.nodeSize })
 
 async function mount(Component, props) {
@@ -34,13 +34,13 @@ test('the canvas draws every node in its type colour and every edge at its confi
   const ids = Object.keys(model.graph.nodes)
   circles.forEach((c, i) => {
     const n = model.graph.nodes[ids[i]]
-    assert.equal(c.getAttribute('fill'), TYPE_COLOR[n.metadata.type], `colour of ${ids[i]}`)
+    assert.equal(c.getAttribute('fill'), KIND_COLOR[n.metadata.type], `colour of ${ids[i]}`)
     assert.equal(+c.getAttribute('r'), Math.min(3 + Math.sqrt(n.metadata.degree), 14))
     assert.equal(+c.getAttribute('cx'), geometry.positions[ids[i]].x)
   })
   const lines = [...el.querySelectorAll('line')]
   assert.equal(lines.length, 30)
-  const want = { EXTRACTED: '0.7', INFERRED: '0.35', AMBIGUOUS: '0.15' }
+  const want = { HIGH: '0.7', MID: '0.35', LOW: '0.15' }
   lines.forEach((l, i) => assert.equal(l.getAttribute('stroke-opacity'), want[model.graph.edges[i].metadata.confidenceLabel]))
   assert.equal(el.querySelectorAll('text.graphlabel').length, 5)
   assert.match(el.querySelector('svg').getAttribute('aria-label'), /24 nodes and 30 edges/)

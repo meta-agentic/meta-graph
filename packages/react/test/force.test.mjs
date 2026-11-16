@@ -5,9 +5,9 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { forceSimulation, forceLink, forceManyBody, forceCenter, forceCollide, forceX, forceY } from 'd3-force'
-import { forceLayout } from './layout/force.js'
-import { resolveStyle } from './style.js'
-import { graphifyStyle } from '../widgets/graph/graphifyStyle.js'
+import { forceLayout } from '../src/layout/force.js'
+import { resolveStyle } from '../src/style.js'
+import { sampleStyle } from '../test-support/sampleStyle.js'
 
 const W = 900, H = 560
 const radius = (n) => Math.min(3 + Math.sqrt(n.degree ?? 0), 14)
@@ -38,14 +38,14 @@ function legacyLayout(nodes, links) {
 
 // A graph in the old wire shape (nodes with degree, links) and the same graph as a model.
 export function fixture(n = 80, m = 130) {
-  const types = ['code', 'document', 'concept', 'paper']
+  const types = ['alpha', 'beta', 'gamma', 'delta']
   let s = 7
   const rnd = () => (s = (s * 48271) % 2147483647) / 2147483647
   const ids = Array.from({ length: n }, (_, i) => `${types[i % 4]}/n${i}`)
   const links = []
   while (links.length < m) {
     const a = Math.floor(rnd() ** 2 * n), b = Math.floor(rnd() * n)
-    if (a !== b) links.push({ source: ids[a], target: ids[b], relation: 'mentions', confidence: ['EXTRACTED', 'INFERRED', 'AMBIGUOUS'][links.length % 3] })
+    if (a !== b) links.push({ source: ids[a], target: ids[b], relation: 'mentions', confidence: ['HIGH', 'MID', 'LOW'][links.length % 3] })
   }
   const degree = new Map()
   for (const l of links) { degree.set(l.source, (degree.get(l.source) ?? 0) + 1); degree.set(l.target, (degree.get(l.target) ?? 0) + 1) }
@@ -62,7 +62,7 @@ export function fixture(n = 80, m = 130) {
 test('the same graph gets the same positions and the same home view as before', () => {
   const { legacyNodes, links, model } = fixture()
   const want = legacyLayout(legacyNodes, links)
-  const style = resolveStyle(graphifyStyle)
+  const style = resolveStyle(sampleStyle)
   const got = forceLayout(model, { size: style.nodeSize })
 
   assert.equal(Object.keys(got.positions).length, want.ns.length)

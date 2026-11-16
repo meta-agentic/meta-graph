@@ -3,7 +3,7 @@
 // could never be reached). The push is zero under the pointer and at the lens edge.
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { fisheyePush, fisheyeScale } from './behaviours/fisheye.js'
+import { fisheyePush, fisheyeScale } from '../src/behaviours/fisheye.js'
 
 const R = 64, MAX = 10
 

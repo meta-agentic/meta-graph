@@ -1,8 +1,8 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { networkx } from './networkx.mjs'
-import { detectReader, readerNames } from './index.mjs'
-import { degrees, validateModel } from '../model.mjs'
+import { networkx } from '../src/readers/networkx.mjs'
+import { detectReader, readerNames } from '../src/readers/index.mjs'
+import { degrees, validateModel } from '../src/model.mjs'
 
 const FIXTURE = JSON.stringify({
   directed: false, multigraph: false,

@@ -8,7 +8,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-const here = path.dirname(fileURLToPath(import.meta.url))
+const here = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'src')
 
 function sources(dir) {
   const out = []
@@ -27,12 +27,13 @@ const FORBIDDEN = [
   [/\b(EXTRACTED|INFERRED|AMBIGUOUS)\b|confidenceLabel/, 'graphify\'s confidence vocabulary'],
   [/#(58a6ff|3fb950|d29922|bc8cff|f85149|30363d)\b/i, 'a graphify colour'],
   [/from\s+['"][^'"]*widgets\//, 'an import from a widget'],
+  [/from\s+['"]\.\.\/\.\.\//, 'a relative import out of the package'],
   [/\b(code|document|paper|concept|rationale|image)\s*:/, 'a graphify node type used as a key'],
 ]
 
-test('src/graph knows no source: no graphify names, attributes, colours or widget imports', () => {
+test('graph-react knows no source: no graphify names, attributes, colours, widget imports or imports out of the package', () => {
   const files = sources(here)
-  assert.ok(files.length >= 6, `expected the graph component's files, found ${files.length}`)
+  assert.ok(files.length >= 7, `expected the graph component's files, found ${files.length}`)
   const faults = []
   for (const f of files) {
     const text = fs.readFileSync(f, 'utf8')
@@ -44,7 +45,7 @@ test('src/graph knows no source: no graphify names, attributes, colours or widge
   assert.deepEqual(faults, [])
 })
 
-test('the canonical model is one definition shared with the server, not a copy', () => {
+test('the canonical model is re-exported from @meta-agentic/graph-model, not copied', () => {
   const text = fs.readFileSync(path.join(here, 'model.js'), 'utf8')
-  assert.match(text, /from '\.\.\/\.\.\/server\/graph\/model\.mjs'/)
+  assert.match(text, /from '@meta-agentic\/graph-model'/)
 })

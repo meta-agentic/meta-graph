@@ -6,10 +6,10 @@ import assert from 'node:assert/strict'
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import * as A from './algebra.mjs'
+import * as A from '../src/algebra.mjs'
 
 const here = path.dirname(fileURLToPath(import.meta.url))
-const load = (f) => JSON.parse(fs.readFileSync(path.join(here, 'fixtures', f), 'utf8'))
+const load = (f) => JSON.parse(fs.readFileSync(path.join(here, '..', 'fixtures', f), 'utf8'))
 const F1 = A.graph(load('f1-dag.json')), F1v2 = load('f1-dag-v2.json')
 const F2 = A.graph(load('f2-undirected.json'))
 const F3 = A.graph(load('f3-cycles.json'))
