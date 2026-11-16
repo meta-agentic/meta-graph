@@ -1,0 +1,37 @@
+# One pipeline for the four packages: every test, the dependency rule, the attribution gate.
+name: CI
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - name: No AI attribution in the commits of this push or pull request
+        env:
+          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+          HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          if [ -n "$BASE" ] && git cat-file -e "$BASE" 2>/dev/null && [ "$BASE" != "0000000000000000000000000000000000000000" ]; then
+            node scripts/check-attribution.mjs "$BASE" "$HEAD"
+          else
+            node scripts/check-attribution.mjs "$HEAD~20" "$HEAD" || node scripts/check-attribution.mjs "$(git rev-list --max-parents=0 HEAD | tail -1)" "$HEAD"
+          fi

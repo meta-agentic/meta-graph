@@ -1,0 +1,8 @@
+#!/bin/sh
+# Refuse a commit message carrying AI attribution (the same rules CI applies).
+# Enable once per clone: git config core.hooksPath .githooks
+msg_file="$1"
+if grep -qiE '^Co-Authored-By:.*(claude|anthropic|gpt|openai|copilot|gemini|cursor)|^Claude-Session:|claude\.ai/code|Generated with \[?Claude|noreply@anthropic\.com' "$msg_file"; then
+  echo "commit-msg: AI attribution is not allowed in this repository (see CLAUDE.md)." >&2
+  exit 1
+fi

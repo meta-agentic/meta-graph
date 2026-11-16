@@ -1,0 +1,26 @@
+{
+  "name": "@meta-agentic/graph-model",
+  "version": "0.1.0",
+  "description": "The canonical graph model: a JSON Graph Format v2 profile (meta-graph/1), its helpers and validation, and readers for common graph formats.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./src/index.mjs",
+  "exports": {
+    ".": "./src/index.mjs",
+    "./readers": "./src/readers/index.mjs"
+  },
+  "files": [
+    "src",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/meta-agentic/meta-graph",
+    "directory": "packages/model"
+  },
+  "keywords": [
+    "graph",
+    "json-graph-format",
+    "networkx"
+  ]
+}

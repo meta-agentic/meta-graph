@@ -1,0 +1,29 @@
+{
+  "name": "meta-graph-parent",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Graph toolkit for JavaScript: a canonical graph model (a JSON Graph Format profile) with readers, a React drawing component with declarative styles and layout strategies, and a read-only graph query language. One repository, four packages, one version.",
+  "license": "MIT",
+  "type": "module",
+  "workspaces": [
+    "packages/model",
+    "packages/react",
+    "packages/query",
+    "packages/meta-graph"
+  ],
+  "scripts": {
+    "test": "node --test \"packages/*/test/**/*.test.mjs\" && node scripts/check-deps.mjs",
+    "test:deps": "node scripts/check-deps.mjs",
+    "lint:attribution": "node scripts/check-attribution.mjs",
+    "release": "node scripts/release.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.12",
+    "jsdom": "^31.0.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
