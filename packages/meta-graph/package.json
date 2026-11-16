@@ -1,6 +1,6 @@
 {
   "name": "@meta-agentic/meta-graph",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "The whole meta-graph toolkit in one install: re-exports @meta-agentic/graph-model, graph-react and graph-query at one version.",
   "license": "MIT",
   "type": "module",
@@ -13,9 +13,9 @@
     "README.md"
   ],
   "dependencies": {
-    "@meta-agentic/graph-model": "0.1.2",
-    "@meta-agentic/graph-query": "0.1.2",
-    "@meta-agentic/graph-react": "0.1.2"
+    "@meta-agentic/graph-model": "0.1.3",
+    "@meta-agentic/graph-query": "0.1.3",
+    "@meta-agentic/graph-react": "0.1.3"
   },
   "repository": {
     "type": "git",

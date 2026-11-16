@@ -1,6 +1,6 @@
 {
   "name": "@meta-agentic/graph-query",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "A read-only query language over canonical graph models: a typed algebra of selectors, reach, set operations, aggregates, structural algorithms and graph constructors, with a 35-query corpus as its acceptance suite. The textual surface and interpreter are in progress.",
   "license": "MIT",
   "type": "module",
@@ -15,7 +15,7 @@
     "README.md"
   ],
   "dependencies": {
-    "@meta-agentic/graph-model": "0.1.2"
+    "@meta-agentic/graph-model": "0.1.3"
   },
   "repository": {
     "type": "git",
