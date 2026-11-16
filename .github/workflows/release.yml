@@ -28,8 +28,8 @@ jobs:
         with:
           node-version: 24
           registry-url: https://registry.npmjs.org
-      - name: Trusted publishing needs npm 11.5 or later
-        run: npm install -g npm@^11.5.1
+      - name: Staged publishing needs npm 11.15 or later
+        run: npm install -g npm@^11.15.0
       - run: npm ci
       - run: npm test
       - name: The tag names the version every package carries
@@ -39,5 +39,12 @@ jobs:
             v=$(node -p "require('./$f').version")
             [ "$v" = "$tag" ] || { echo "$f is $v, the tag is $tag"; exit 1; }
           done
-      - name: Publish in dependency order (model, react, query, the aggregator)
-        run: npm publish --workspaces --access public --provenance
+      - run: npm run build -w packages/react
+      # The trusted publisher allows staging only, so each package is staged on npm and goes
+      # live when a maintainer approves it there. `npm stage publish` does not walk
+      # workspaces, so each package is staged from its own directory, in dependency order.
+      - name: Stage the four packages (model, react, query, the aggregator)
+        run: |
+          for p in model react query meta-graph; do
+            (cd "packages/$p" && npm stage publish --access public --provenance)
+          done
