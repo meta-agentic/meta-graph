@@ -1,7 +1,7 @@
 {
   "name": "meta-graph-parent",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Graph toolkit for JavaScript: a canonical graph model (a JSON Graph Format profile) with readers, a React drawing component with declarative styles and layout strategies, and a read-only graph query language. One repository, four packages, one version.",
   "license": "MIT",
   "type": "module",
