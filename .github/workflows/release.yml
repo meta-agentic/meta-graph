@@ -16,6 +16,9 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    # The npm trusted publisher names this environment; GitHub holds the job here until the
+    # environment's required reviewer approves, and only for tags matching v*.
+    environment: npm
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
