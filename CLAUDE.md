@@ -32,7 +32,7 @@ A golden test (positions, colours, query answers) is changed only with the reaso
 - Conventional commit subjects (`feat`, `fix`, `docs`, `test`, `refactor`, `chore`, `ci`, `build`, `perf`, `release`) with the package as the scope when one package is touched: `feat(react): …`, `fix(query): …`.
 - One concern per commit; add files by explicit path, never `git add -A`; rebase, never merge, onto `main`.
 - Pull requests target `main`; the owner merges.
-- Releases are lockstep: `node scripts/release.mjs <version>` sets one version on the parent and the four packages, commits and tags. Publishing to npm is a separate, deliberate step.
+- Releases are lockstep: `node scripts/release.mjs <version>` sets one version on the parent and the four packages, commits and tags; pushing the tag (`git push origin main --follow-tags`) publishes through `.github/workflows/release.yml` with npm trusted publishing and provenance, no token stored.
 
 ## Writing
 
