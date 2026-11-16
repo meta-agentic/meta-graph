@@ -4,14 +4,23 @@
   "description": "Draw any canonical graph model in React: a declarative style specification, layout strategies (force now, layered next), GraphCanvas with pan, zoom and opt-in behaviours, and GraphList, its keyboard-reachable text twin.",
   "license": "MIT",
   "type": "module",
-  "main": "./src/index.js",
+  "main": "./dist/index.js",
   "exports": {
-    ".": "./src/index.js"
+    ".": {
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
   },
   "files": [
+    "dist",
     "src",
     "README.md"
   ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "node build.mjs",
+    "prepack": "node build.mjs"
+  },
   "dependencies": {
     "@meta-agentic/graph-model": "0.1.0",
     "d3-force": "^3.0.0"
