@@ -9,6 +9,9 @@ import { fileURLToPath } from 'node:url'
 const version = process.argv[2]
 if (!/^\d+\.\d+\.\d+(-[\w.]+)?$/.test(version ?? '')) { console.error('usage: node scripts/release.mjs <semver>'); process.exit(2) }
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
+// The release commit is authored by whoever runs this; refuse an identity CI would reject.
+const who = execSync('git config user.email', { cwd: root, encoding: 'utf8' }).trim()
+if (/anthropic\.com|openai\.com/i.test(who)) { console.error(`release: git user.email is ${who}; set your own identity first`); process.exit(2) }
 const files = ['package.json', ...['model', 'react', 'query', 'meta-graph'].map((p) => `packages/${p}/package.json`)]
 for (const f of files) {
   const full = path.join(root, f)
