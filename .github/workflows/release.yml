@@ -9,6 +9,9 @@ name: Release
 on:
   push:
     tags: ['v*']
+  # Run by hand to check that npm trusts this workflow for every package, without
+  # publishing anything or using up a version number.
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -18,21 +21,31 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    # The npm trusted publisher names this environment, which runs for v* tags only. The
+    # The npm trusted publisher names this environment, which runs for v* tags and, for the
+    # hand-started trust check, main. The
     # trusted publisher does not allow direct publishing, so a release is staged on npm and
     # goes live only when a maintainer approves it there with two-factor authentication.
     environment: npm
     steps:
       - uses: actions/checkout@v4
+      # No registry-url: it would write a placeholder token that npm falls back to when the
+      # trusted-publishing exchange fails, hiding npm's reason behind "token invalid".
       - uses: actions/setup-node@v7
         with:
           node-version: 24
-          registry-url: https://registry.npmjs.org
+      - name: Does npm trust this workflow for every package?
+        run: node scripts/check-trust.mjs
       - name: Staged publishing needs npm 11.15 or later
         run: npm install -g npm@^11.15.0
+      - name: A hand-started run stops after the trust check
+        if: github.event_name == 'workflow_dispatch'
+        run: echo "Trust check only; nothing is published."
       - run: npm ci
+        if: github.event_name == 'push'
       - run: npm test
+        if: github.event_name == 'push'
       - name: The tag names the version every package carries
+        if: github.event_name == 'push'
         run: |
           tag="${GITHUB_REF_NAME#v}"
           for f in package.json packages/*/package.json; do
@@ -40,11 +53,13 @@ jobs:
             [ "$v" = "$tag" ] || { echo "$f is $v, the tag is $tag"; exit 1; }
           done
       - run: npm run build -w packages/react
+        if: github.event_name == 'push'
       # The trusted publisher allows staging only, so each package is staged on npm and goes
       # live when a maintainer approves it there. `npm stage publish` does not walk
       # workspaces, so each package is staged from its own directory, in dependency order.
       - name: Stage the four packages (model, react, query, the aggregator)
+        if: github.event_name == 'push'
         run: |
           for p in model react query meta-graph; do
-            (cd "packages/$p" && npm stage publish --access public --provenance)
+            (cd "packages/$p" && npm stage publish --access public --provenance --loglevel verbose)
           done
