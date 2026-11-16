@@ -1,6 +1,6 @@
 {
   "name": "@meta-agentic/graph-react",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Draw any canonical graph model in React: a declarative style specification, layout strategies (force now, layered next), GraphCanvas with pan, zoom and opt-in behaviours, and GraphList, its keyboard-reachable text twin.",
   "license": "MIT",
   "type": "module",
@@ -22,7 +22,7 @@
     "prepack": "node build.mjs"
   },
   "dependencies": {
-    "@meta-agentic/graph-model": "0.1.1",
+    "@meta-agentic/graph-model": "0.1.2",
     "d3-force": "^3.0.0"
   },
   "peerDependencies": {
